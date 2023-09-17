@@ -1,2 +1,7 @@
-﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
+﻿using System;
+
+System.Console.WriteLine(
+Environment.GetEnvironmentVariable("YourVariableName", EnvironmentVariableTarget.Machine)
+);
+// Environment.SetEnvironmentVariable("YourVariableName", "YourValue", EnvironmentVariableTarget.Machine);
+
