@@ -35,7 +35,7 @@ namespace QadiffWindowsEnvironmentManager
                 if (subCommand is null) {
                     Console.Error.WriteLine("If you get this error, Please teach me! error No. 01");
                 }
-                subCommand?.Invoke(sc, null);
+                subCommand?.Invoke(sc, new object[] {args});
                 Environment.Exit(0);
             }
 
