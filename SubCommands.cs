@@ -9,12 +9,12 @@ namespace QadiffWindowsEnvironmentManager
     /// </summary>
     public class SubCommands
     {
-        public static void Export()
+        public void Export()
         {
             Console.WriteLine("Called Export()");
         }
 
-        public static void Set()
+        public void Set()
         {
             Console.WriteLine("Called Set()");
         }

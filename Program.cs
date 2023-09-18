@@ -20,8 +20,9 @@ namespace QadiffWindowsEnvironmentManager
 
             string firstArgument = args[0];
 
-            Type subCommandClass = typeof(SubCommands);
-            MethodInfo[] subcommandMethods = subCommandClass.GetMethods();
+            SubCommands sc = new SubCommands();
+            Type subCommandClassInstance = sc.GetType();
+            MethodInfo[] subcommandMethods = subCommandClassInstance.GetMethods();
             string[] subcommands = new string[subcommandMethods.Length];
             for (int i = 0; i < subcommandMethods.Length; i++)
             {
@@ -30,11 +31,11 @@ namespace QadiffWindowsEnvironmentManager
 
             if (subcommands.Any(v => v.ToLower() == firstArgument.ToLower()))
             {
-                MethodInfo? subCommand = subCommandClass.GetMethod(CapitalizeFirstLetter(firstArgument));
+                MethodInfo? subCommand = subCommandClassInstance.GetMethod(CapitalizeFirstLetter(firstArgument));
                 if (subCommand is null) {
                     Console.Error.WriteLine("If you get this error, Please teach me! error No. 01");
                 }
-                subCommand?.Invoke(null, null);
+                subCommand?.Invoke(sc, null);
                 Environment.Exit(0);
             }
 
