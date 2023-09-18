@@ -33,3 +33,8 @@ dotnet build
 ```C#
 windowsEnvironment.exe export
 ```
+
+## メモ
+
+SubCommand になるのは、SubCommands の関数名。
+SubCommands ディレクトリは、処理を書くだけ。

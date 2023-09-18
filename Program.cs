@@ -18,7 +18,7 @@ namespace QadiffWindowsEnvironmentManager
                 Environment.Exit(0);
             }
 
-            string firstArgument = args[0];
+            string firstArgument = args[0];     // for code reading. 読みやすくするため
 
             SubCommands sc = new SubCommands();
             Type subCommandClassInstance = sc.GetType();
