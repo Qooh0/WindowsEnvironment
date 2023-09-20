@@ -14,7 +14,7 @@ namespace QadiffWindowsEnvironmentManager
     {
         public void Export(string[] args)
         {
-            Console.WriteLine($"Called Export({args[1]})");
+            Console.WriteLine($"Called Export Length: ({args.Length})");
             ISubCommand command = new ExportCommand(args);
             command.Execute();
         }

@@ -1,6 +1,7 @@
 # WindowsEnvironment
 
-set Environment Variable on windows.  
+~~set Environment Variable on windows.~~  
+Use SET command.
 
 ## Objective.
 
@@ -12,6 +13,7 @@ Apache License 2.0
 
 ## Requirements.
 
+- Windows
 - .net 8
 
 ## How To Use
@@ -38,3 +40,5 @@ windowsEnvironment.exe export
 
 SubCommand になるのは、SubCommands の関数名。
 SubCommands ディレクトリは、処理を書くだけ。
+
+読み書きファイルは UTF-8 限定
