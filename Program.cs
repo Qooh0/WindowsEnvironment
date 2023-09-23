@@ -59,9 +59,10 @@ namespace QadiffWindowsEnvironmentManager
             """
             set/backup Environment variable.
 
-            ev <option>
+            windowsEnvironment <option>
 
             -h, help : Show this.
+            export   : SubCommand.      Export environment variable.
             """);
         }
 

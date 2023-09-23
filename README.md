@@ -30,6 +30,12 @@ Apache License 2.0
 dotnet build
 ```
 
+Production
+
+```C#
+dotnet publish -p:PublishSingleFile=true -p:AssemblyName=windowsEnvironment
+```
+
 2. use
 
 ```C#
