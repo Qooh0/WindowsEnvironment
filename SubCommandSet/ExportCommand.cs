@@ -1,4 +1,5 @@
 using System;
+using System.Text.Json;
 namespace QadiffWindowsEnvironmentManager.SubCommandSet;
 
 public class ExportCommand : ISubCommand
@@ -33,8 +34,47 @@ public class ExportCommand : ISubCommand
             Console.WriteLine(GetRawVal(_envVarName));            
             return;
         }
+        
         // use nameListFile
-        Console.WriteLine("Read from file");
+        if(string.IsNullOrEmpty(_nameListFile) == false)
+        {
+            Dictionary<string, string> envKeyValueDict = new ();
+            IEnumerable<string> nameList;
+            if (IsJsonFormat(_nameListFile)) 
+            {
+                nameList = ReadJsonFile(_nameListFile);
+            }
+            else
+            {
+                nameList = ReadFile(_nameListFile);
+            }
+
+            foreach (string variableName  in nameList)
+            {
+                string value = GetRawVal(variableName) ?? string.Empty;
+                envKeyValueDict.Add(variableName, value);
+            }
+            Output(envKeyValueDict);
+        }
+    }
+
+    private void Output(Dictionary<string, string> envKeyValueDict)
+    {
+        if (string.IsNullOrEmpty(_outputFilename))
+        {
+            foreach (KeyValuePair<string, string> kvp in envKeyValueDict)
+            {
+                Console.WriteLine($"{kvp.Key}={kvp.Value}");
+            }
+        }
+
+        if (string.IsNullOrEmpty(_outputFilename) == false)
+        {
+            using (StreamWriter sw = new StreamWriter(_outputFilename))
+            {
+                sw.Write(JsonSerializer.Serialize(envKeyValueDict));
+            }
+        }
     }
 
     private void ShowHelp()
@@ -90,12 +130,21 @@ public class ExportCommand : ISubCommand
         }
     }
 
-    private IEnumerable<string> ReadFile()
+    private IEnumerable<string> ReadFile(string filepath)
     {
-        string[] lines = File.ReadAllLines(_nameListFile);
+        string[] lines = File.ReadAllLines(filepath);
         foreach (string line in lines)
         {
             yield return line;
+        }
+    }
+
+    private IEnumerable<string> ReadJsonFile(string filepath)
+    {
+        // json
+        foreach (KeyValuePair<string, string> kvp in JsonSerializer.Deserialize<Dictionary<string, string>>(File.ReadAllText(_nameListFile)))
+        {
+            yield return kvp.Key;
         }
     }
 
@@ -116,4 +165,17 @@ public class ExportCommand : ISubCommand
         }
     }
 
+    private bool IsJsonFormat(string filePath)
+    {
+        try
+        {
+            var jsonData = File.ReadAllText(filePath);
+            var jsonObject = JsonSerializer.Deserialize<object>(jsonData); // ここでデシリアライズを試みます
+            return true;
+        }
+        catch (JsonException)  // デシリアライズに失敗した場合、例外を捕捉します
+        {
+            return false;
+        }
+    }
 }

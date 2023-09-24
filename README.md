@@ -22,6 +22,31 @@ Apache License 2.0
 
 ### get environment variable
 
+#### only cmd
+
+```C#
+windowsEnvironment.exe path
+```
+
+#### A plane file with a list of keys
+
+test.txt
+
+```txt
+path
+simpleEnv
+```
+
+```cmd
+windowsEnvironment.exe export -f test.txt
+```
+
+#### A json file with a list of keys
+
+```json
+{"path":"","qtest":""}
+```
+
 ### How To Compile
 
 1. compile
