@@ -11,28 +11,27 @@ public class ExportCommand : ISubCommand
     public void Execute()
     {
         this.ParamerterAnalyze();
-        if (showHelp) {
+        if (_showHelp) {
             ShowHelp();
             Environment.Exit(0);
         }
         Console.WriteLine($"{_args.Length}");
         
-        if (string.IsNullOrEmpty(envVarName) && string.IsNullOrEmpty(nameListFile))
+        if (string.IsNullOrEmpty(_envVarName) && string.IsNullOrEmpty(_nameListFile))
         {
             // no args
             return;
         }
 
-        if (string.IsNullOrEmpty(envVarName) == false && string.IsNullOrEmpty(nameListFile) == false)
+        if (string.IsNullOrEmpty(_envVarName) == false && string.IsNullOrEmpty(_nameListFile) == false)
         {
             // both args error
             return;
         }
 
-        if (string.IsNullOrEmpty(envVarName) == false) 
+        if (string.IsNullOrEmpty(_envVarName) == false) 
         {
-            Console.WriteLine("Only stdout env");
-            Console.WriteLine(GetRawVal(envVarName));            
+            Console.WriteLine(GetRawVal(_envVarName));            
             return;
         }
         // use nameListFile
@@ -52,12 +51,12 @@ public class ExportCommand : ISubCommand
         );
     }
 
-    string outputFilename = string.Empty;
-    string nameListFile = string.Empty;
-    string envVarName = string.Empty;
-    bool useMachineEnvironment = false;
-    bool showHelp = false;
-    bool verbose = false;
+    string _outputFilename = string.Empty;
+    string _nameListFile = string.Empty;
+    string _envVarName = string.Empty;
+    bool _useMachineEnvironment = false;
+    bool _showHelp = false;
+    bool _verbose = false;
 
     private void ParamerterAnalyze()
     {
@@ -67,26 +66,26 @@ public class ExportCommand : ISubCommand
             {
                 case "-f":
                 case "--nameListFile":
-                    nameListFile = _args[++i];
+                    _nameListFile = _args[++i];
                     break;
                 case "-o":
                 case "--outputFile":
-                    outputFilename = _args[++i];
+                    _outputFilename = _args[++i];
                     break;
                 case "-m":
                 case "--machine":
-                    useMachineEnvironment = true;
+                    _useMachineEnvironment = true;
                     break;
                 case "-h":
                 case "--help":
-                    showHelp = true;
+                    _showHelp = true;
                     break;
                 case "-v":
                 case "--verbose":
-                    verbose = true;
+                    _verbose = true;
                     break;
                 default:
-                    envVarName = _args[i];     // STDIN
+                    _envVarName = _args[i];     // STDIN
                     break;
             }
         }
@@ -94,7 +93,7 @@ public class ExportCommand : ISubCommand
 
     private IEnumerable<string> ReadFile()
     {
-        string[] lines = File.ReadAllLines(nameListFile);
+        string[] lines = File.ReadAllLines(_nameListFile);
         foreach (string line in lines)
         {
             yield return line;
@@ -103,12 +102,12 @@ public class ExportCommand : ISubCommand
 
     private string? GetRawVal(string variableName)
     {
-        if (verbose)
+        if (_verbose)
         {
-            Console.WriteLine($"Environment Variable Key : {envVarName}\nCommand Params -o {this.outputFilename}, -f {this.nameListFile}, -m {useMachineEnvironment}, -h {showHelp}");
+            Console.WriteLine($"Environment Variable Key : {_envVarName}\nCommand Params -o {this._outputFilename}, -f {this._nameListFile}, -m {_useMachineEnvironment}, -h {_showHelp}");
         }
 
-        if (useMachineEnvironment)
+        if (_useMachineEnvironment)
         {
             return Environment.GetEnvironmentVariable(variableName, EnvironmentVariableTarget.Machine);
         }
