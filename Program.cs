@@ -20,22 +20,22 @@ namespace QadiffWindowsEnvironmentManager
 
             string firstArgument = args[0];     // for code reading. 読みやすくするため
 
-            SubCommands sc = new SubCommands();
-            Type subCommandClassInstance = sc.GetType();
-            MethodInfo[] subcommandMethods = subCommandClassInstance.GetMethods();
-            string[] subcommands = new string[subcommandMethods.Length];
-            for (int i = 0; i < subcommandMethods.Length; i++)
+            SubCommands _sc = new SubCommands();
+            Type _subCommandClassInstance = _sc.GetType();
+            MethodInfo[] _subcommandMethods = _subCommandClassInstance.GetMethods();
+            string[] _subcommands = new string[_subcommandMethods.Length];
+            for (int i = 0; i < _subcommandMethods.Length; i++)
             {
-                subcommands[i] = subcommandMethods[i].Name;
+                _subcommands[i] = _subcommandMethods[i].Name;
             }
 
-            if (subcommands.Any(v => v.ToLower() == firstArgument.ToLower()))
+            if (_subcommands.Any(v => v.ToLower() == firstArgument.ToLower()))
             {
-                MethodInfo? subCommand = subCommandClassInstance.GetMethod(CapitalizeFirstLetter(firstArgument));
+                MethodInfo? subCommand = _subCommandClassInstance.GetMethod(CapitalizeFirstLetter(firstArgument));
                 if (subCommand is null) {
                     Console.Error.WriteLine("If you get this error, Please teach me! error No. 01");
                 }
-                subCommand?.Invoke(sc, new object[] {args});
+                subCommand?.Invoke(_sc, new object[] {args});
                 Environment.Exit(0);
             }
 
