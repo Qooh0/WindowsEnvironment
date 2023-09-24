@@ -17,19 +17,22 @@ public class ExportCommand : ISubCommand
         }
         Console.WriteLine($"{_args.Length}");
         
-        if (string.IsNullOrEmpty(envName) && string.IsNullOrEmpty(nameListFile))
+        if (string.IsNullOrEmpty(envVarName) && string.IsNullOrEmpty(nameListFile))
         {
-            Console.WriteLine("No order");
+            // no args
             return;
         }
-        
-            Console.WriteLine($"envName : {envName}");
-            Console.WriteLine($"nameListFile : {nameListFile}");
 
-        if (string.IsNullOrEmpty(envName) == false) 
+        if (string.IsNullOrEmpty(envVarName) == false && string.IsNullOrEmpty(nameListFile) == false)
+        {
+            // both args error
+            return;
+        }
+
+        if (string.IsNullOrEmpty(envVarName) == false) 
         {
             Console.WriteLine("Only stdout env");
-            Console.WriteLine(GetRawVal(envName));            
+            Console.WriteLine(GetRawVal(envVarName));            
             return;
         }
         // use nameListFile
@@ -51,7 +54,7 @@ public class ExportCommand : ISubCommand
 
     string outputFilename = string.Empty;
     string nameListFile = string.Empty;
-    string envName = string.Empty;
+    string envVarName = string.Empty;
     bool useMachineEnvironment = false;
     bool showHelp = false;
     bool verbose = false;
@@ -83,7 +86,7 @@ public class ExportCommand : ISubCommand
                     verbose = true;
                     break;
                 default:
-                    envName = _args[i];     // STDIN
+                    envVarName = _args[i];     // STDIN
                     break;
             }
         }
@@ -102,7 +105,7 @@ public class ExportCommand : ISubCommand
     {
         if (verbose)
         {
-            Console.WriteLine($"Environment Variable Key : {envName}\nCommand Params -o {this.outputFilename}, -f {this.nameListFile}, -m {useMachineEnvironment}, -h {showHelp}");
+            Console.WriteLine($"Environment Variable Key : {envVarName}\nCommand Params -o {this.outputFilename}, -f {this.nameListFile}, -m {useMachineEnvironment}, -h {showHelp}");
         }
 
         if (useMachineEnvironment)
