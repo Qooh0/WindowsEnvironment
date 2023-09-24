@@ -15,7 +15,6 @@ public class ExportCommand : ISubCommand
             ShowHelp();
             Environment.Exit(0);
         }
-        Console.WriteLine($"{_args.Length}");
         
         if (string.IsNullOrEmpty(_envVarName) && string.IsNullOrEmpty(_nameListFile))
         {
