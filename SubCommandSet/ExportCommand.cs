@@ -99,14 +99,14 @@ public class ExportCommand : ISubCommand
     {
         for (int i = 1; i < _args.Length; i++)
         {
-            switch(_args[i])
+            switch(_args[i].ToLower())
             {
                 case "-f":
-                case "--nameListFile":
+                case "--namelistfile":
                     _nameListFile = _args[++i];
                     break;
                 case "-o":
-                case "--outputFile":
+                case "--outputfile":
                     _outputFilename = _args[++i];
                     break;
                 case "-m":
