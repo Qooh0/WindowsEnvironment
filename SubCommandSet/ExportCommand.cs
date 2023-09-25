@@ -126,6 +126,10 @@ public class ExportCommand : ISubCommand
                     break;
             }
         }
+        if (_verbose)
+        {
+            Console.WriteLine($"Environment Variable Key : {_envVarName}\nCommand Params -o {this._outputFilename}, -f {this._nameListFile}, -m {_useMachineEnvironment}, -h {_showHelp}");
+        }
     }
 
     private IEnumerable<string> ReadFile(string filepath)
@@ -139,11 +143,6 @@ public class ExportCommand : ISubCommand
 
     private string? GetRawVal(string variableName)
     {
-        if (_verbose)
-        {
-            Console.WriteLine($"Environment Variable Key : {_envVarName}\nCommand Params -o {this._outputFilename}, -f {this._nameListFile}, -m {_useMachineEnvironment}, -h {_showHelp}");
-        }
-
         if (_useMachineEnvironment)
         {
             return Environment.GetEnvironmentVariable(variableName, EnvironmentVariableTarget.Machine);
