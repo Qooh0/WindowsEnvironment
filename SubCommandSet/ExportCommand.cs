@@ -29,33 +29,28 @@ public class ExportCommand : ISubCommand
             return;
         }
 
+        Dictionary<string, string> envKeyValueDict = [];
+
+        // input
         if (string.IsNullOrEmpty(_envVarName) == false) 
         {
-            Console.WriteLine(GetRawVal(_envVarName));            
-            return;
+            envKeyValueDict.Add(_envVarName, GetRawVal(_envVarName) ?? string.Empty);
         }
-        
-        // use nameListFile
-        if(string.IsNullOrEmpty(_nameListFile) == false)
+        else if (string.IsNullOrEmpty(_nameListFile) == false)
         {
-            Dictionary<string, string> envKeyValueDict = new ();
-            IEnumerable<string> nameList;
-            if (IsJsonFormat(_nameListFile)) 
-            {
-                nameList = ReadJsonFile(_nameListFile);
-            }
-            else
-            {
-                nameList = ReadFile(_nameListFile);
-            }
-
+            IEnumerable<string> nameList = ReadFile(_nameListFile);
             foreach (string variableName  in nameList)
             {
                 string value = GetRawVal(variableName) ?? string.Empty;
                 envKeyValueDict.Add(variableName, value);
             }
-            Output(envKeyValueDict);
         }
+
+        // do something
+
+
+        // output
+        Output(envKeyValueDict);
     }
 
     private void Output(Dictionary<string, string> envKeyValueDict)
@@ -72,7 +67,7 @@ public class ExportCommand : ISubCommand
         {
             using (StreamWriter sw = new StreamWriter(_outputFilename))
             {
-                sw.Write(JsonSerializer.Serialize(envKeyValueDict));
+                //TODO: ここを修正
             }
         }
     }
@@ -139,15 +134,6 @@ public class ExportCommand : ISubCommand
         }
     }
 
-    private IEnumerable<string> ReadJsonFile(string filepath)
-    {
-        // json
-        foreach (KeyValuePair<string, string> kvp in JsonSerializer.Deserialize<Dictionary<string, string>>(File.ReadAllText(_nameListFile)))
-        {
-            yield return kvp.Key;
-        }
-    }
-
     private string? GetRawVal(string variableName)
     {
         if (_verbose)
@@ -162,20 +148,6 @@ public class ExportCommand : ISubCommand
         else
         {
             return Environment.GetEnvironmentVariable(variableName, EnvironmentVariableTarget.User);
-        }
-    }
-
-    private bool IsJsonFormat(string filePath)
-    {
-        try
-        {
-            var jsonData = File.ReadAllText(filePath);
-            var jsonObject = JsonSerializer.Deserialize<object>(jsonData); // ここでデシリアライズを試みます
-            return true;
-        }
-        catch (JsonException)  // デシリアライズに失敗した場合、例外を捕捉します
-        {
-            return false;
         }
     }
 }

@@ -20,7 +20,7 @@ Apache License 2.0
 
 ### set environment variable
 
-### get environment variable
+### get environment variable Value
 
 #### only cmd
 
