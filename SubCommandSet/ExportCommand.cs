@@ -29,6 +29,11 @@ public class ExportCommand : ISubCommand
             return;
         }
 
+        if (_envVarName.StartsWith('-')) {
+            ShowHelp();
+            Environment.Exit(0);
+        }
+
         Dictionary<string, string> envKeyValueDict = [];
 
         // input
