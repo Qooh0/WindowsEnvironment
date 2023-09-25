@@ -4,6 +4,11 @@ class SimpleIniReaderWriter
 {
     private Dictionary<string, string> _entries = new Dictionary<string, string>();
 
+    public SimpleIniReaderWriter(Dictionary<string, string> entries)
+    {
+        _entries = entries;
+    }
+
     public SimpleIniReaderWriter(string path)
     {
         foreach (var line in File.ReadAllLines(path))

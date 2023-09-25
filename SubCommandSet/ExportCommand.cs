@@ -70,10 +70,8 @@ public class ExportCommand : ISubCommand
 
         if (string.IsNullOrEmpty(_outputFilename) == false)
         {
-            using (StreamWriter sw = new StreamWriter(_outputFilename))
-            {
-                //TODO: ここを修正
-            }
+            SimpleIniReaderWriter iniFile = new SimpleIniReaderWriter(envKeyValueDict);
+            iniFile.Save(_outputFilename);
         }
     }
 
