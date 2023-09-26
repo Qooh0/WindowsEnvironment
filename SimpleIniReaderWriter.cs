@@ -25,6 +25,11 @@ class SimpleIniReaderWriter
             }
         }
     }
+    
+    public Dictionary<string, string> Entries()
+    {
+        return _entries;
+    }
 
     public bool isInifile(string path)
     {
@@ -49,6 +54,19 @@ class SimpleIniReaderWriter
             {
                 writer.WriteLine($"{entry.Key}={entry.Value}");
             }
+        }
+    }
+
+    public IEnumerable<(string k, string v)> All(string path)
+    {
+        foreach (var line in File.ReadAllLines(path))
+        {
+            var kv = line.Split('=');
+            if (kv.Length > 2) 
+            {
+                continue;
+            }
+            yield return (kv[0], kv[1]);
         }
     }
 }
