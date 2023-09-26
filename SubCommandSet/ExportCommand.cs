@@ -29,33 +29,33 @@ public class ExportCommand : ISubCommand
             return;
         }
 
+        if (_envVarName.StartsWith('-')) {
+            ShowHelp();
+            Environment.Exit(0);
+        }
+
+        Dictionary<string, string> envKeyValueDict = [];
+
+        // input
         if (string.IsNullOrEmpty(_envVarName) == false) 
         {
-            Console.WriteLine(GetRawVal(_envVarName));            
-            return;
+            envKeyValueDict.Add(_envVarName, GetRawVal(_envVarName) ?? string.Empty);
         }
-        
-        // use nameListFile
-        if(string.IsNullOrEmpty(_nameListFile) == false)
+        else if (string.IsNullOrEmpty(_nameListFile) == false)
         {
-            Dictionary<string, string> envKeyValueDict = new ();
-            IEnumerable<string> nameList;
-            if (IsJsonFormat(_nameListFile)) 
-            {
-                nameList = ReadJsonFile(_nameListFile);
-            }
-            else
-            {
-                nameList = ReadFile(_nameListFile);
-            }
-
+            IEnumerable<string> nameList = ReadFile(_nameListFile);
             foreach (string variableName  in nameList)
             {
                 string value = GetRawVal(variableName) ?? string.Empty;
                 envKeyValueDict.Add(variableName, value);
             }
-            Output(envKeyValueDict);
         }
+
+        // do something
+
+
+        // output
+        Output(envKeyValueDict);
     }
 
     private void Output(Dictionary<string, string> envKeyValueDict)
@@ -70,10 +70,8 @@ public class ExportCommand : ISubCommand
 
         if (string.IsNullOrEmpty(_outputFilename) == false)
         {
-            using (StreamWriter sw = new StreamWriter(_outputFilename))
-            {
-                sw.Write(JsonSerializer.Serialize(envKeyValueDict));
-            }
+            SimpleIniReaderWriter iniFile = new SimpleIniReaderWriter(envKeyValueDict);
+            iniFile.Save(_outputFilename);
         }
     }
 
@@ -101,14 +99,14 @@ public class ExportCommand : ISubCommand
     {
         for (int i = 1; i < _args.Length; i++)
         {
-            switch(_args[i])
+            switch(_args[i].ToLower())
             {
                 case "-f":
-                case "--nameListFile":
+                case "--namelistfile":
                     _nameListFile = _args[++i];
                     break;
                 case "-o":
-                case "--outputFile":
+                case "--outputfile":
                     _outputFilename = _args[++i];
                     break;
                 case "-m":
@@ -128,6 +126,10 @@ public class ExportCommand : ISubCommand
                     break;
             }
         }
+        if (_verbose)
+        {
+            Console.WriteLine($"Environment Variable Key : {_envVarName}\nCommand Params -o {this._outputFilename}, -f {this._nameListFile}, -m {_useMachineEnvironment}, -h {_showHelp}");
+        }
     }
 
     private IEnumerable<string> ReadFile(string filepath)
@@ -139,22 +141,8 @@ public class ExportCommand : ISubCommand
         }
     }
 
-    private IEnumerable<string> ReadJsonFile(string filepath)
-    {
-        // json
-        foreach (KeyValuePair<string, string> kvp in JsonSerializer.Deserialize<Dictionary<string, string>>(File.ReadAllText(_nameListFile)))
-        {
-            yield return kvp.Key;
-        }
-    }
-
     private string? GetRawVal(string variableName)
     {
-        if (_verbose)
-        {
-            Console.WriteLine($"Environment Variable Key : {_envVarName}\nCommand Params -o {this._outputFilename}, -f {this._nameListFile}, -m {_useMachineEnvironment}, -h {_showHelp}");
-        }
-
         if (_useMachineEnvironment)
         {
             return Environment.GetEnvironmentVariable(variableName, EnvironmentVariableTarget.Machine);
@@ -162,20 +150,6 @@ public class ExportCommand : ISubCommand
         else
         {
             return Environment.GetEnvironmentVariable(variableName, EnvironmentVariableTarget.User);
-        }
-    }
-
-    private bool IsJsonFormat(string filePath)
-    {
-        try
-        {
-            var jsonData = File.ReadAllText(filePath);
-            var jsonObject = JsonSerializer.Deserialize<object>(jsonData); // ここでデシリアライズを試みます
-            return true;
-        }
-        catch (JsonException)  // デシリアライズに失敗した場合、例外を捕捉します
-        {
-            return false;
         }
     }
 }

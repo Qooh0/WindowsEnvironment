@@ -20,7 +20,8 @@ namespace QadiffWindowsEnvironmentManager
 
         public void Set(string[] args)
         {
-            Console.WriteLine($"Called Set({args[1]})");
+            ISubCommand command = new SetCommand(args);
+            command.Execute();
         }
     }
 }
